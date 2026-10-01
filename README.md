@@ -10,6 +10,14 @@ A clean, responsive, full-stack MERN application built for college practical ass
 
 ---
 
+## 🌐 Project Links
+
+- **GitHub Repository**: `[Provide your GitHub Repository URL]`
+- **Live Demo (Frontend)**: `[Provide your Deployed Vercel Frontend URL]`
+- **Backend API (Render)**: `[Provide your Deployed Render Backend URL]`
+
+---
+
 ## 📌 Problem Statement
 
 College students often struggle to organize focused peer study groups across different departments and semesters. Information about subject-specific study circles gets lost in informal chat groups without member limits, schedules, or shared syllabus notes. **StudySync** solves this by providing a unified academic portal where students can browse open groups, respect strict seat limits, collaborate on study notes, and coordinate exam prep sessions effectively.
@@ -47,6 +55,17 @@ College students often struggle to organize focused peer study groups across dif
 
 ---
 
+## 🖼️ User Interface & Screenshots Overview
+
+| View | Description | Key Elements |
+|---|---|---|
+| **Groups Directory** | Main student discovery hub | Search bar, subject filter tabs, status toggle, capacity progress bar, instant join action |
+| **Group Workspace** | Detailed study circle page | Schedule box, 1-click copy meeting info, enrolled members roster, shared notes editor |
+| **Create Group** | Group launch form | Subject autocomplete tags, min-capacity validation, creator role auto-assignment |
+| **Student Auth** | Login & Register pages | 1-click demo accounts picker, branch & semester dropdowns, client-side validation |
+
+---
+
 ## 🛠️ Technology Stack
 
 | Layer | Technology |
@@ -55,7 +74,7 @@ College students often struggle to organize focused peer study groups across dif
 | **Backend** | Node.js, Express.js, REST API Architecture, CORS |
 | **Database** | MongoDB, Mongoose ODM |
 | **Authentication** | JSON Web Tokens (JWT), bcryptjs password hashing |
-| **Tooling** | Concurrently, Nodemon, Dotenv |
+| **Tooling & Deploy** | Concurrently, Nodemon, Dotenv, Vercel (Frontend), Render (Backend), MongoDB Atlas |
 
 ---
 
@@ -86,10 +105,11 @@ MERN DRIVE/
 │   │   ├── App.jsx              # Routes & Layout
 │   │   ├── index.css            # Custom Design System
 │   │   └── main.jsx             # React entry point
-│   ├── .env.example
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
+│   ├── .env.example             # Client env template
+│   ├── index.html               # HTML template
+│   ├── package.json             # Frontend packages
+│   ├── vercel.json              # Vercel SPA rewrite routing rule
+│   └── vite.config.js           # Vite configuration
 │
 ├── server/                      # Node.js Express Backend
 │   ├── src/
@@ -110,13 +130,13 @@ MERN DRIVE/
 │   │   ├── scripts/             # Database seeder
 │   │   │   └── seed.js
 │   │   └── server.js            # Express server entry point
-│   ├── .env.example
-│   └── package.json
+│   ├── .env.example             # Server env template
+│   └── package.json             # Backend packages
 │
-├── .gitignore
-├── .env.example
+├── .gitignore                   # Excludes node_modules and all .env files
+├── .env.example                 # Root environment template
 ├── package.json                 # Root orchestrator scripts
-└── README.md
+└── README.md                    # Project documentation
 ```
 
 ---
@@ -124,20 +144,21 @@ MERN DRIVE/
 ## ⚙️ Environment Variables
 
 ### 1. Server Environment (`server/.env`)
-Create `server/.env` with the following variables:
+Create `server/.env` with:
 ```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/studysync
 JWT_SECRET=studysync_jwt_super_secret_key_college_assessment_2026
 CLIENT_URL=http://localhost:5173
 ```
-*(For MongoDB Atlas in the cloud, replace `MONGO_URI` with your connection string `mongodb+srv://<user>:<password>@cluster0.mongodb.net/studysync?retryWrites=true&w=majority`)*
+*(For cloud production deployment, replace `MONGO_URI` with your MongoDB Atlas URI and `CLIENT_URL` with your Vercel URL)*
 
 ### 2. Client Environment (`client/.env`)
 Create `client/.env` with:
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
+*(For cloud production deployment, replace `VITE_API_URL` with your Render backend URL e.g. `https://studysync-api.onrender.com/api`)*
 
 ---
 
@@ -145,7 +166,7 @@ VITE_API_URL=http://localhost:5000/api
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18 or newer)
-- [MongoDB Community Server](https://www.mongodb.com/try/download/community) running locally or a [MongoDB Atlas](https://www.mongodb.com/atlas) account.
+- [MongoDB Community Server](https://www.mongodb.com/try/download/community) running locally or [MongoDB Atlas](https://www.mongodb.com/atlas) cloud cluster.
 
 ### Step 1: Clone or Navigate to Project Root
 ```bash
@@ -153,25 +174,16 @@ cd "MERN DRIVE"
 ```
 
 ### Step 2: Install All Dependencies
-You can install dependencies for root, server, and client with:
 ```bash
 npm run install:all
 ```
-*Or install manually:*
-```bash
-cd server && npm install
-cd ../client && npm install
-cd ..
-```
 
-### Step 3: Populate Demo Seed Data (Optional but Recommended)
-Run the seed script to create sample students and active study groups:
+### Step 3: Populate Demo Seed Data (Optional)
 ```bash
 npm run seed
 ```
 
 ### Step 4: Run Application
-Start both backend API server and frontend client concurrently:
 ```bash
 npm run dev
 ```
@@ -194,7 +206,7 @@ All demo accounts share the password: `password123`
 | Ananya Iyer | `ananya@college.edu` | Electronics & Communication | 4th Semester |
 | Dev Malhotra | `dev@college.edu` | Computer Science & Engineering | 8th Semester |
 
-*(On the Login page, you can also click any of the 1-click demo account buttons to auto-fill credentials instantly!)*
+*(The login page includes 1-click demo credential selector buttons!)*
 
 ---
 
@@ -224,68 +236,42 @@ All demo accounts share the password: `password123`
 
 ## 🧪 Comprehensive End-to-End Test Flow
 
-To verify every requirement during assessment evaluation:
-
 1. **Test Registration & Duplicate Email Protection**:
-   - Click **Register** on the navigation bar.
-   - Enter `Karan Mehta`, `karan@college.edu`, `password123`, `Computer Science`, `6th Semester`.
-   - Submit -> Successfully logged in and redirected to directory.
-   - Try to register again with `karan@college.edu` -> Returns error: *"A student with this email address already exists"*.
+   - Go to [http://localhost:5173/register](http://localhost:5173/register).
+   - Enter student details and submit -> Successful registration and auto login.
+   - Attempt registering again with same email -> Blocked with duplicate email warning.
 
 2. **Test Group Creation & Creator Assignment**:
    - While logged in, click **Create Group**.
-   - Fill in:
-     - Group Name: `Operating Systems Kernel Study Circle`
-     - Subject: `Operating Systems`
-     - Description: `Process synchronization, deadlock detection, and virtual memory lab exercises.`
-     - Meeting Info: `Every Friday 4:00 PM | Lab Room 404`
-     - Max Capacity: `3`
-   - Click **Publish Study Group** -> Redirects to Group Workspace.
-   - Verify that your account is automatically listed in the Enrolled Members list with role `"Creator"`.
+   - Enter Group Name, Subject, Description, Meeting Info, and Max Capacity $\ge 2$.
+   - Submit -> Created successfully, redirected to Workspace with you as **Lead Creator**.
 
 3. **Test Shared Study Notes**:
-   - In your newly created group workspace, click **Edit Notes**.
-   - Add notes or reference links and click **Save Notes**.
-   - Verify notes update immediately with a success message.
+   - In Workspace, click **Edit Notes**, add revision bullet points, click **Save Notes**.
+   - Notes persist in MongoDB and display formatted for all members.
 
-4. **Test Joining a Group**:
-   - Log out, then log in as `Dev Malhotra` (`dev@college.edu`).
-   - Go to Groups Directory and click **Join Group** on `Operating Systems Kernel Study Circle`.
-   - Member count increases from 1/3 to 2/3, remaining slots update to 1.
+4. **Test Joining an Open Group**:
+   - Log in as another student (e.g. `rohan@college.edu`).
+   - Click **Join Group** on the directory card or workspace.
+   - Member count updates dynamically.
 
 5. **Test Capacity Limit & Full Status**:
-   - Log in as another student (`ananya@college.edu`) and join `Operating Systems Kernel Study Circle`.
-   - Member count reaches 3/3. Status badge updates to **"Group Full"**.
-   - The **Join Group** button is replaced by **"Group Full"** (disabled).
-   - If an API request attempts to join, backend responds with `400: Group is full`.
+   - When member count reaches capacity, status switches to **"Group Full"**.
+   - The Join button is disabled and backend rejects new joins with `400: Group is full`.
 
 6. **Test Duplicate Join Prevention**:
-   - Logged-in member attempts to join a group they are already in -> Blocked on backend with `400: You are already a member of this group`.
+   - An enrolled student attempting to re-join is rejected with `400: You are already a member of this group`.
 
 ---
 
 ## 🚢 GitHub Push Instructions
 
-To push this project to a new public GitHub repository:
-
 ```bash
-# 1. Initialize git in project root (if not already initialized)
 git init
-
-# 2. Stage all files (.gitignore automatically protects node_modules and .env)
 git add .
-
-# 3. Create initial commit
-git commit -m "feat: complete StudySync group study management system (MERN stack)"
-
-# 4. Set default branch to main
+git commit -m "Initial StudySync application"
 git branch -M main
-
-# 5. Add your new GitHub repository remote URL
-# (Replace with your actual GitHub repository URL)
-git remote add origin https://github.com/<your-username>/studysync-mern.git
-
-# 6. Push to GitHub
+git remote add origin <YOUR_GITHUB_REPOSITORY_URL>
 git push -u origin main
 ```
 
@@ -293,34 +279,26 @@ git push -u origin main
 
 ## 🌐 Production Deployment Steps
 
-### Option A: Backend on Render / Railway & Frontend on Vercel
+### 1. Database (MongoDB Atlas)
+1. Create a free M0 cluster at [MongoDB Atlas](https://www.mongodb.com/atlas).
+2. Create a Database User and allow Network Access from anywhere (`0.0.0.0/0`).
+3. Copy your URI: `mongodb+srv://<username>:<password>@cluster0.mongodb.net/studysync?retryWrites=true&w=majority`.
 
-#### 1. Deploy MongoDB Database (MongoDB Atlas)
-1. Go to [MongoDB Atlas](https://www.mongodb.com/atlas) and create a free Shared Cluster (`M0`).
-2. Under **Database Access**, create a database user and password.
-3. Under **Network Access**, add IP `0.0.0.0/0` (Allow access from anywhere).
-4. Click **Connect** -> **Drivers** to get your connection URI: `mongodb+srv://<username>:<password>@cluster0.mongodb.net/studysync?retryWrites=true&w=majority`.
-
-#### 2. Deploy Backend on [Render](https://render.com)
+### 2. Backend (Render)
 1. Create a **New Web Service** linked to your GitHub repo.
-2. Configure:
-   - **Root Directory**: `server`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
+2. Root Directory: `server`, Build Command: `npm install`, Start Command: `npm start`.
 3. Add Environment Variables:
    - `MONGO_URI`: *<your MongoDB Atlas URI>*
-   - `JWT_SECRET`: *<strong random secret string>*
+   - `JWT_SECRET`: *<your secure secret string>*
    - `PORT`: `5000`
-   - `CLIENT_URL`: *<your production frontend Vercel URL>*
-4. Deploy and copy your backend service URL (e.g., `https://studysync-api.onrender.com`).
+   - `CLIENT_URL`: *<your Vercel frontend URL>*
 
-#### 3. Deploy Frontend on [Vercel](https://vercel.com)
-1. Import your GitHub repository in Vercel.
-2. Set **Root Directory** to `client`.
-3. Framework Preset: **Vite**.
-4. Add Environment Variable:
-   - `VITE_API_URL`: `https://studysync-api.onrender.com/api`
-5. Click **Deploy**.
+### 3. Frontend (Vercel)
+1. Import repository in [Vercel](https://vercel.com).
+2. Root Directory: `client`, Framework Preset: `Vite`.
+3. Add Environment Variable:
+   - `VITE_API_URL`: `<your Render backend URL>/api`
+4. Deploy!
 
 ---
 
