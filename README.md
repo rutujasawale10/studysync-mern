@@ -12,9 +12,9 @@ A clean, responsive, full-stack MERN application built for college practical ass
 
 ## 🌐 Project Links
 
-- **GitHub Repository**: `[Provide your GitHub Repository URL]`
-- **Live Demo (Frontend)**: `[Provide your Deployed Vercel Frontend URL]`
-- **Backend API (Render)**: `[Provide your Deployed Render Backend URL]`
+- **GitHub Repository**: [https://github.com/rutujasawale10/studysync-mern](https://github.com/rutujasawale10/studysync-mern)
+- **Live Demo (Frontend)**: `[Deploying on Vercel]`
+- **Backend API (Render)**: `[Deploying on Render]`
 
 ---
 
