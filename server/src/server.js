@@ -12,7 +12,10 @@ connectDB();
 
 const app = express();
 
-// Middleware
+// Trust proxy for secure cookies/headers when deployed behind Render/reverse proxy
+app.set('trust proxy', 1);
+
+// Flexible and secure CORS configuration
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
@@ -23,12 +26,20 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (like mobile apps or curl requests)
+      // Allow requests with no origin (like mobile apps, curl, server-to-server health checks)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+
+      // Check if origin matches allowed origins, Vercel preview URLs, or wildcard
+      const isAllowed =
+        process.env.CLIENT_URL === '*' ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        process.env.NODE_ENV !== 'production';
+
+      if (isAllowed) {
         return callback(null, true);
       }
-      return callback(new Error('CORS not allowed for this origin: ' + origin));
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -39,16 +50,29 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health Check Endpoint
+// Health Check Endpoint (Essential for Render & Uptime Monitors)
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: 'StudySync API Server'
+    service: 'StudySync API Server',
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
-// Mount Routes
+// Root API Welcome Endpoint
+app.get('/api', (req, res) => {
+  res.status(200).json({
+    message: 'StudySync Group Study Management API is active and operational.',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      groups: '/api/groups'
+    }
+  });
+});
+
+// Mount Core Application Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/groups', require('./routes/groupRoutes'));
 
@@ -56,7 +80,7 @@ app.use('/api/groups', require('./routes/groupRoutes'));
 app.use('/api/*', (req, res) => {
   res.status(404).json({
     success: false,
-    message: `Endpoint not found: ${req.originalUrl}`
+    message: `API endpoint not found: ${req.originalUrl}`
   });
 });
 
@@ -66,7 +90,7 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
-  console.log(`[StudySync Server] Running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log(`[StudySync Server] Running on port ${PORT}`);
   console.log(`[API Base] http://localhost:${PORT}/api`);
 });
 
