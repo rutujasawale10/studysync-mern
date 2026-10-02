@@ -231,7 +231,9 @@ async function runQAAudit() {
       method: 'GET'
     });
     const searchPassed = searchRes.body.groups.every((g) =>
-      g.groupName.includes('Algorithms') || g.subject.includes('Algorithms') || g.description.includes('Algorithms')
+      g.groupName.toLowerCase().includes('algorithms') ||
+      g.subject.toLowerCase().includes('algorithms') ||
+      g.description.toLowerCase().includes('algorithms')
     );
     const filterPassed = filterRes.body.groups.every((g) => g.subject.toLowerCase() === 'web development');
 
